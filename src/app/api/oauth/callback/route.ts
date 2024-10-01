@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   const code = searchParams.get('code');
 
   if (!code) {
-    return NextResponse.redirect('/error?message=No_code_provided');
+    return NextResponse.json({ error: 'No code provided' }, { status: 400 });
   }
 
   try {
@@ -26,12 +26,13 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    const { access_token } = tokenResponse.data;
+    const { access_token, refresh_token } = tokenResponse.data;
 
-    // Redirect back to the home page with the access token
-    return NextResponse.redirect(`/?access_token=${access_token}`);
+    // Here, you should securely store the access_token and refresh_token
+    // For this example, we'll just return them to the client
+    return NextResponse.json({ access_token, refresh_token });
   } catch (error) {
     console.error('Error exchanging code for token:', error.response?.data || error.message);
-    return NextResponse.redirect('/error?message=Failed_to_exchange_code_for_token');
+    return NextResponse.json({ error: 'Failed to exchange code for token' }, { status: 500 });
   }
 }
