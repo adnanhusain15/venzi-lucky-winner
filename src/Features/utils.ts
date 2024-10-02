@@ -14,6 +14,7 @@ const getParsedResponses = (fields: Field[], responses: ResponseItem[]) => {
       else if (item.subfield_key === "phone_number")
         info["phoneNumber"] = ans.phone_number;
     });
+    info.fullName = info.firstName + " " + info.lastName;
     userInfo.push(info as User);
   }
   return userInfo;

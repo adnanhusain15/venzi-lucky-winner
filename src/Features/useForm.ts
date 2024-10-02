@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import apis from "./request";
 import utils from "./utils";
-
+import confetti from "canvas-confetti";
 let interval: NodeJS.Timeout;
 const useForm = (formId: string) => {
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -11,6 +11,25 @@ const useForm = (formId: string) => {
   const [form, setForm] = useState<Form>();
   const [responses, setResponses] = useState<ResponseItem[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+    const file = event.target.files[0];
+    if (file) {
+      setActiveIndex(-1);
+      setIsDrawing(false);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const loadedNames = (e.target.result as string)
+          .split("\n")
+          .map((name) => name.trim())
+          .filter((name) => name !== "")
+          .map((name) => ({ fullName: name }));
+        setUsers(loadedNames as User[]);
+      };
+      reader.readAsText(file);
+    }
+    setLoading(false);
+  };
   useEffect(() => {
     syncForm();
     return () => {
@@ -36,6 +55,23 @@ const useForm = (formId: string) => {
     }
   };
   const [isDrawing, setIsDrawing] = useState(false);
+  const animateNames = () => {
+    setIsDrawing(true);
+    let count = 0;
+    const duration = 3 * 1000;
+    const intervalTime = 100;
+
+    const interval = setInterval(() => {
+      setActiveIndex(count % users.length);
+      count++;
+      if (count * intervalTime >= duration) {
+        clearInterval(interval);
+        setIsDrawing(false); // End cycling effect
+        setActiveIndex(Math.floor(Math.random() * users.length));
+        launchConfetti();
+      }
+    }, intervalTime);
+  };
   const startDraw = () => {
     setIsDrawing(true);
     interval = setInterval(() => {
@@ -46,6 +82,7 @@ const useForm = (formId: string) => {
     clearInterval(interval);
     setIsDrawing(false);
   };
+
   return {
     syncForm,
     form,
@@ -57,6 +94,8 @@ const useForm = (formId: string) => {
     endDraw,
     activeIndex,
     selected: !isDrawing && activeIndex > -1,
+    animateNames,
+    handleFileChange,
   };
 };
 
@@ -100,4 +139,43 @@ export type User = {
   email?: string;
   firstName: string;
   lastName: string;
+  fullName: string;
+};
+
+const launchConfetti = () => {
+  const count = 200;
+  const defaults = {
+    origin: { y: 0.7 },
+  };
+
+  function fire(particleRatio, opts) {
+    confetti({
+      ...defaults,
+      ...opts,
+      particleCount: Math.floor(count * particleRatio),
+    });
+  }
+
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  });
+  fire(0.2, {
+    spread: 60,
+  });
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+  });
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+  });
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  });
 };
