@@ -15,6 +15,7 @@ export default function Home() {
     endDraw,
     isDrawing,
     startDraw,
+    selected,
   } = useForm(formId);
   const image = form?.theme.background.href;
   return (
@@ -41,8 +42,16 @@ export default function Home() {
                 Lucky Draw for&nbsp;{form.title}
               </h1>
               {users.length ? (
-                <div className="w-2/3 flex flex-col text-center  justify-center items-center gap-2">
-                  <h2 className="text-center text-2xl font-bold ">
+                <div className="w-2/3 flex flex-col text-center  justify-center items-center gap-3">
+                  <h2
+                    className={clsx(
+                      "text-center text-2xl font-bold transform transition duration-500 p-1 rounded-md",
+                      {
+                        ["scale-125 border-white border border-solid"]:
+                          selected,
+                      }
+                    )}
+                  >
                     Winner&apos;s Name :{" "}
                     {activeIndex > -1
                       ? `${users[activeIndex].firstName} ${users[activeIndex].lastName} `

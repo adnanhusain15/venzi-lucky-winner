@@ -9,6 +9,7 @@ const useForm = (formId: string) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isLoading, setLoading] = useState(false);
   const [form, setForm] = useState<Form>();
+  const [selected, setSelected] = useState(false);
   const [responses, setResponses] = useState<ResponseItem[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
@@ -38,11 +39,14 @@ const useForm = (formId: string) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const startDraw = () => {
     setIsDrawing(true);
+    setSelected(false);
     interval = setInterval(() => {
       setActiveIndex((e) => (e === users.length - 1 ? 0 : e + 1));
     }, 120);
   };
   const endDraw = () => {
+    setSelected(true);
+
     clearInterval(interval);
     setIsDrawing(false);
   };
@@ -56,6 +60,7 @@ const useForm = (formId: string) => {
     startDraw,
     endDraw,
     activeIndex,
+    selected: !isDrawing && activeIndex > -1,
   };
 };
 
