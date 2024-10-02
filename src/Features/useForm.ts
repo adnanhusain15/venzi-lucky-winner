@@ -9,7 +9,6 @@ const useForm = (formId: string) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isLoading, setLoading] = useState(false);
   const [form, setForm] = useState<Form>();
-  const [theme, setTheme] = useState<any>();
   const [responses, setResponses] = useState<ResponseItem[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
