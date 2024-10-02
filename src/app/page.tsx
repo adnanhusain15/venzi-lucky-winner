@@ -19,6 +19,7 @@ export default function Home() {
     handleFileChange,
   } = useForm(formId);
   const image = form?.theme.background.href;
+  const wImage = form?.welcome_screens[0]?.attachment.href;
   return (
     <>
       {isLoading ? <FullScreenLoader /> : null}
@@ -33,10 +34,23 @@ export default function Home() {
               }
             : {}
         }
-        className={clsx(`h-screen w-screen`)}
+        className={clsx(`h-screen w-screen `)}
         containerClassName="flex-col items-center justify-center"
+        backgroundImage={
+          wImage ? (
+            <div
+              className="absolute z-10 w-screen h-screen opacity-30"
+              style={{
+                backgroundImage: `url('${wImage}')`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "65vw 85vh",
+              }}
+            ></div>
+          ) : null
+        }
       >
-        <div className="flex flex-col w-full text-center  justify-center items-center  gap-5 text-white">
+        <div className="z-20 flex h-full flex-col w-full text-center  justify-center items-center  gap-5 text-white">
           {form ? (
             <>
               <h1 className="text-4xl font-bold ">

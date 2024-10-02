@@ -111,6 +111,11 @@ export type Form = {
       href: string;
     };
   };
+  welcome_screens: {
+    attachment: {
+      href: string;
+    };
+  }[];
 };
 export type Field = {
   id: string;
