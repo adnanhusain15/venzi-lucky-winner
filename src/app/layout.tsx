@@ -25,10 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>Venzi</title>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <main className="relative flex flex-col min-h-screen bg-white ">
+          <div className="flex-grow flex-1">{children}</div>
+        </main>
       </body>
     </html>
   );
