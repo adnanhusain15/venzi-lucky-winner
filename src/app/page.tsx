@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useForm from "@/Features/useForm";
 import clsx from "clsx";
+
+import BG_IMG from "../../public/images/BG.png";
+import LOGO_IMG from "../../public/images/LOGO.png";
+import Image from "next/image";
 const formId = "p21dpHIw";
 export default function Home() {
   const {
@@ -18,33 +22,41 @@ export default function Home() {
     animateNames,
     handleFileChange,
   } = useForm(formId);
-  const image = form?.theme.background.href;
-  const wImage = form?.welcome_screens[0]?.attachment.href;
+  const image = BG_IMG.src;
+  const logoImage = LOGO_IMG.src;
+  const title = "SCC Webinar Participants";
+  // const image = form?.theme.background.href;
+  // const wImage = form?.welcome_screens[0]?.attachment.href;
   return (
     <>
       {isLoading ? <FullScreenLoader /> : null}
 
+      <div className="fixed top-0 left-0 p-8 ">
+        <Image src={logoImage} alt="logo" width={120} height={50} />
+      </div>
       <Section
-        style={
-          image
-            ? {
-                backgroundImage: `url('${image}')`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "100vw 100vh",
-              }
-            : {}
-        }
-        className={clsx(`h-screen w-screen `)}
+        // style={
+        //   image
+        //     ? {
+        //         backgroundImage: `url('${image}')`,
+        //         backgroundRepeat: "no-repeat",
+        //         backgroundSize: "70vw 70vh",
+        //         backgroundPosition: "center",
+        //         backgroundColor: "white",
+        //       }
+        //     : {}
+        // }
+        className={clsx(`h-screen w-screen`)}
         containerClassName="flex-col items-center justify-center"
         backgroundImage={
-          wImage ? (
+          image ? (
             <div
-              className="absolute z-10 w-screen h-screen opacity-30"
+              className="absolute w-screen h-screen"
               style={{
-                backgroundImage: `url('${wImage}')`,
+                backgroundImage: `url('${image}')`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
-                backgroundSize: "65vw 85vh",
+                backgroundSize: "80vw 80vh",
               }}
             ></div>
           ) : null
@@ -53,8 +65,8 @@ export default function Home() {
         <div className="z-20 flex h-full flex-col w-full text-center  justify-center items-center  gap-5 text-white">
           {form ? (
             <>
-              <h1 className="text-4xl font-bold ">
-                Lucky Draw for&nbsp;{form.title}
+              <h1 className="text-4xl font-bold">
+                Live Prize Draw for {title}
               </h1>
               {users.length ? (
                 <div className="w-2/3 flex flex-col text-center  justify-center items-center gap-3">
