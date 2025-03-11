@@ -11,12 +11,14 @@ const useForm = (formId: string) => {
   const [form, setForm] = useState<Form>();
   const [responses, setResponses] = useState<ResponseItem[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [pickedUsers, setPickedUsers] = useState<number[]>([]);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const file = event.target.files[0];
     if (file) {
       setActiveIndex(-1);
       setIsDrawing(false);
+      setPickedUsers([]);
       const reader = new FileReader();
       reader.onload = (e) => {
         const loadedNames = (e.target.result as string)
@@ -47,6 +49,7 @@ const useForm = (formId: string) => {
         const responses = await apis.getResponses<Response>(formId);
         setResponses(responses.items);
         setUsers(utils.getParsedResponses(formData.fields, responses.items));
+        setPickedUsers([]);
       }
     } catch (err) {
       console.log(err);
@@ -66,8 +69,24 @@ const useForm = (formId: string) => {
       count++;
       if (count * intervalTime >= duration) {
         clearInterval(interval);
-        setIsDrawing(false); // End cycling effect
-        setActiveIndex(Math.floor(Math.random() * users.length));
+        setIsDrawing(false);
+
+        let attempts = 0;
+        let newIndex: number;
+
+        do {
+          newIndex = Math.floor(Math.random() * users.length);
+          attempts++;
+        } while (
+          pickedUsers.includes(newIndex) &&
+          attempts < 3 &&
+          pickedUsers.length < users.length
+        );
+
+        setActiveIndex(newIndex);
+        if (!pickedUsers.includes(newIndex)) {
+          setPickedUsers((prev) => [...prev, newIndex]);
+        }
         launchConfetti();
       }
     }, intervalTime);
@@ -96,6 +115,7 @@ const useForm = (formId: string) => {
     selected: !isDrawing && activeIndex > -1,
     animateNames,
     handleFileChange,
+    pickedUsers,
   };
 };
 
