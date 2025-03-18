@@ -20,6 +20,8 @@ export default function Home() {
     selected,
     animateNames,
     handleFileChange,
+    currentWinner,
+    remainingCount,
   } = useForm(formId);
   // const image = BG_IMG.src;
   const logoImage = LOGO_IMG.src;
@@ -65,12 +67,8 @@ export default function Home() {
               </h1>
               {users.length ? (
                 <div className="w-2/3 flex flex-col text-center  justify-center items-center gap-3">
-                  <h2
-                    className={clsx(
-                      "text-center text-2xl font-bold transform transition duration-500"
-                    )}
-                  >
-                    Winner&apos;s Name :
+                  <h2 className="text-center text-2xl font-bold transform transition duration-500">
+                    Winner&apos;s Name:
                   </h2>
                   <h2
                     className={clsx(
@@ -81,17 +79,26 @@ export default function Home() {
                       }
                     )}
                   >
-                    {activeIndex > -1 ? `${users[activeIndex].fullName}` : ""}
+                    {isDrawing
+                      ? activeIndex > -1
+                        ? users[activeIndex].fullName
+                        : ""
+                      : currentWinner?.fullName || ""}
                   </h2>
+                  <div className="text-sm mb-2">
+                    Remaining participants: {remainingCount}
+                  </div>
                   <Button
                     className="w-full"
-                    disabled={isDrawing}
+                    disabled={isDrawing || remainingCount === 0}
                     onClick={animateNames}
                   >
                     {isDrawing
                       ? "Drawing"
+                      : remainingCount === 0
+                      ? "No more participants"
                       : selected
-                      ? "Restart draw"
+                      ? "Draw next winner"
                       : "Start draw"}
                   </Button>
                 </div>

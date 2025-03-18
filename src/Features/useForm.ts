@@ -10,15 +10,15 @@ const useForm = (formId: string) => {
   const [isLoading, setLoading] = useState(false);
   const [form, setForm] = useState<Form>();
   const [responses, setResponses] = useState<ResponseItem[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [pickedUsers, setPickedUsers] = useState<number[]>([]);
+  const [availableUsers, setAvailableUsers] = useState<User[]>([]);
+  const [currentWinner, setCurrentWinner] = useState<User | null>(null);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const file = event.target.files[0];
     if (file) {
       setActiveIndex(-1);
       setIsDrawing(false);
-      setPickedUsers([]);
+      setCurrentWinner(null);
       const reader = new FileReader();
       reader.onload = (e) => {
         const loadedNames = (e.target.result as string)
@@ -26,7 +26,7 @@ const useForm = (formId: string) => {
           .map((name) => name.trim())
           .filter((name) => name !== "")
           .map((name) => ({ fullName: name }));
-        setUsers(loadedNames as User[]);
+        setAvailableUsers(loadedNames as User[]);
       };
       reader.readAsText(file);
     }
@@ -48,8 +48,12 @@ const useForm = (formId: string) => {
       if (formData) {
         const responses = await apis.getResponses<Response>(formId);
         setResponses(responses.items);
-        setUsers(utils.getParsedResponses(formData.fields, responses.items));
-        setPickedUsers([]);
+        const parsedUsers = utils.getParsedResponses(
+          formData.fields,
+          responses.items
+        );
+        setAvailableUsers(parsedUsers);
+        setCurrentWinner(null);
       }
     } catch (err) {
       console.log(err);
@@ -59,34 +63,29 @@ const useForm = (formId: string) => {
   };
   const [isDrawing, setIsDrawing] = useState(false);
   const animateNames = () => {
+    if (availableUsers.length === 0) return;
+
     setIsDrawing(true);
     let count = 0;
     const duration = 3 * 1000;
     const intervalTime = 100;
 
     const interval = setInterval(() => {
-      setActiveIndex(count % users.length);
+      setActiveIndex(count % availableUsers.length);
       count++;
       if (count * intervalTime >= duration) {
         clearInterval(interval);
         setIsDrawing(false);
 
-        let attempts = 0;
-        let newIndex: number;
+        const winnerIndex = Math.floor(Math.random() * availableUsers.length);
+        const winner = availableUsers[winnerIndex];
 
-        do {
-          newIndex = Math.floor(Math.random() * users.length);
-          attempts++;
-        } while (
-          pickedUsers.includes(newIndex) &&
-          attempts < 3 &&
-          pickedUsers.length < users.length
+        setCurrentWinner(winner);
+        setAvailableUsers((prev) =>
+          prev.filter((_, index) => index !== winnerIndex)
         );
 
-        setActiveIndex(newIndex);
-        if (!pickedUsers.includes(newIndex)) {
-          setPickedUsers((prev) => [...prev, newIndex]);
-        }
+        setActiveIndex(winnerIndex);
         launchConfetti();
       }
     }, intervalTime);
@@ -94,7 +93,7 @@ const useForm = (formId: string) => {
   const startDraw = () => {
     setIsDrawing(true);
     interval = setInterval(() => {
-      setActiveIndex((e) => (e === users.length - 1 ? 0 : e + 1));
+      setActiveIndex((e) => (e === availableUsers.length - 1 ? 0 : e + 1));
     }, 120);
   };
   const endDraw = () => {
@@ -106,7 +105,7 @@ const useForm = (formId: string) => {
     syncForm,
     form,
     responses,
-    users,
+    users: availableUsers,
     isLoading,
     isDrawing,
     startDraw,
@@ -115,7 +114,8 @@ const useForm = (formId: string) => {
     selected: !isDrawing && activeIndex > -1,
     animateNames,
     handleFileChange,
-    pickedUsers,
+    currentWinner,
+    remainingCount: availableUsers.length,
   };
 };
 
