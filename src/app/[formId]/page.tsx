@@ -71,46 +71,46 @@ export default function Home() {
               <h1 className="text-4xl font-bold">
                 Live Prize Draw for {form.title}
               </h1>
-              {users.length ? (
-                <div className="w-2/3 flex flex-col text-center  justify-center items-center gap-3">
-                  <h2 className="text-center text-2xl font-bold transform transition duration-500">
-                    Winner&apos;s Name:
+              <div className="w-2/3 flex flex-col text-center  justify-center items-center gap-3">
+                <h2 className="text-center text-2xl font-bold transform transition duration-500">
+                  Winner&apos;s Name:
+                </h2>
+                {winnerName ? (
+                  <h2
+                    className={clsx(
+                      "text-center text-2xl font-bold transform transition duration-500 py-1 px-3 rounded-md",
+                      {
+                        ["scale-150 border-yellow-500 border border-solid mb-1"]:
+                          selected,
+                      }
+                    )}
+                  >
+                    {isDrawing
+                      ? activeIndex > -1
+                        ? users?.[activeIndex]?.fullName
+                        : ""
+                      : currentWinner?.fullName || ""}
                   </h2>
-                  {winnerName ? (
-                    <h2
-                      className={clsx(
-                        "text-center text-2xl font-bold transform transition duration-500 py-1 px-3 rounded-md",
-                        {
-                          ["scale-150 border-yellow-500 border border-solid mb-1"]:
-                            selected,
-                        }
-                      )}
-                    >
-                      {isDrawing
-                        ? activeIndex > -1
-                          ? users?.[activeIndex]?.fullName
-                          : ""
-                        : currentWinner?.fullName || ""}
-                    </h2>
-                  ) : null}
+                ) : null}
+                {remainingCount ? (
                   <div className="text-sm mb-2">
                     Remaining participants: {remainingCount}
                   </div>
-                  <Button
-                    className="w-full"
-                    disabled={isDrawing || remainingCount === 0}
-                    onClick={animateNames}
-                  >
-                    {isDrawing
-                      ? "Drawing"
-                      : remainingCount === 0
-                      ? "No more participants"
-                      : selected
-                      ? "Draw next winner"
-                      : "Start draw"}
-                  </Button>
-                </div>
-              ) : null}
+                ) : null}
+                <Button
+                  className="w-full"
+                  disabled={isDrawing || remainingCount === 0}
+                  onClick={animateNames}
+                >
+                  {isDrawing
+                    ? "Drawing"
+                    : remainingCount === 0
+                    ? "No more participants"
+                    : selected
+                    ? "Draw next winner"
+                    : "Start draw"}
+                </Button>
+              </div>
             </>
           ) : null}
           <div className="flex justify-center items-center gap-2">
