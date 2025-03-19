@@ -27,6 +27,11 @@ export default function Home() {
   const logoImage = LOGO_IMG.src;
   const image = form?.theme.background.href;
   const wImage = form?.welcome_screens[0]?.attachment.href;
+  const winnerName = isDrawing
+    ? activeIndex > -1
+      ? users?.[activeIndex]?.fullName
+      : ""
+    : currentWinner?.fullName || "";
   return (
     <>
       {isLoading ? <FullScreenLoader /> : null}
@@ -70,21 +75,23 @@ export default function Home() {
                   <h2 className="text-center text-2xl font-bold transform transition duration-500">
                     Winner&apos;s Name:
                   </h2>
-                  <h2
-                    className={clsx(
-                      "text-center text-2xl font-bold transform transition duration-500 py-1 px-3 rounded-md",
-                      {
-                        ["scale-150 border-yellow-500 border border-solid mb-1"]:
-                          selected,
-                      }
-                    )}
-                  >
-                    {isDrawing
-                      ? activeIndex > -1
-                        ? users[activeIndex].fullName
-                        : ""
-                      : currentWinner?.fullName || ""}
-                  </h2>
+                  {winnerName ? (
+                    <h2
+                      className={clsx(
+                        "text-center text-2xl font-bold transform transition duration-500 py-1 px-3 rounded-md",
+                        {
+                          ["scale-150 border-yellow-500 border border-solid mb-1"]:
+                            selected,
+                        }
+                      )}
+                    >
+                      {isDrawing
+                        ? activeIndex > -1
+                          ? users?.[activeIndex]?.fullName
+                          : ""
+                        : currentWinner?.fullName || ""}
+                    </h2>
+                  ) : null}
                   <div className="text-sm mb-2">
                     Remaining participants: {remainingCount}
                   </div>
