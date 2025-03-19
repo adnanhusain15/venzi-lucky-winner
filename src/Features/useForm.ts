@@ -52,7 +52,7 @@ const useForm = (formId: string) => {
           formData.fields,
           responses.items
         );
-        setAvailableUsers([...parsedUsers, ...parsedUsers, ...parsedUsers]);
+        setAvailableUsers(parsedUsers);
         setCurrentWinner(null);
       }
     } catch (err) {
