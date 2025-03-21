@@ -92,11 +92,7 @@ export default function Home() {
                       : currentWinner?.fullName || ""}
                   </h2>
                 ) : null}
-                {remainingCount ? (
-                  <div className="text-sm mb-2">
-                    Remaining participants: {remainingCount}
-                  </div>
-                ) : null}
+                
                 <Button
                   className="w-full"
                   disabled={isDrawing || remainingCount === 0}
