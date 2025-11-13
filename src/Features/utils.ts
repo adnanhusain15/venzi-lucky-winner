@@ -8,11 +8,11 @@ const getParsedResponses = (fields: Field[], responses: ResponseItem[]) => {
     const info: Partial<User> = {};
     contactInfoFields.forEach((item) => {
       const ans = resp.answers.find((i) => i.field.id === item.id);
-      if (item.subfield_key === "first_name") info["firstName"] = ans.text;
-      else if (item.subfield_key === "last_name") info["lastName"] = ans.text;
-      else if (item.subfield_key === "email") info["email"] = ans.email;
+      if (item.subfield_key === "first_name") info["firstName"] = ans?.text;
+      else if (item.subfield_key === "last_name") info["lastName"] = ans?.text;
+      else if (item.subfield_key === "email") info["email"] = ans?.email;
       else if (item.subfield_key === "phone_number")
-        info["phoneNumber"] = ans.phone_number;
+        info["phoneNumber"] = ans?.phone_number;
     });
     info.fullName = info.firstName + " " + info.lastName;
     userInfo.push(info as User);
